@@ -62,7 +62,7 @@ Tracks confidence and decision-making improvement over time
 
 Frontend/UI: Python (Streamlit)
 Backend Logic: Python
-API Integration: Twilio (SMS alerts)
+API Integration: Twilio (SMS alerts), OpenAPI AI
 Location Services: IP-based location API
 
 **How It Works**
