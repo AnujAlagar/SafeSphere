@@ -1,0 +1,98 @@
+import streamlit as st
+
+st.set_page_config(page_title="Safety App", layout="centered")
+
+# Session state to track steps
+if "step" not in st.session_state:
+    st.session_state.step = 1
+
+if "user_data" not in st.session_state:
+    st.session_state.user_data = {}
+
+# -------------------------
+# STEP 1: BASIC DETAILS
+# -------------------------
+if st.session_state.step == 1:
+    st.title("Step 1: Basic Details")
+
+    name = st.text_input("Name / Nickname")
+    age = st.selectbox("Age Range", ["13-15", "16-18", "18-25"])
+    city = st.text_input("City")
+    language = st.selectbox("Preferred Language", ["English", "Hindi", "Kannada"])
+
+    if st.button("Next →"):
+        if city == "":
+            st.warning("Please enter city")
+        else:
+            st.session_state.user_data.update({
+                "name": name,
+                "age": age,
+                "city": city,
+                "language": language
+            })
+            st.session_state.step = 2
+
+# -------------------------
+# STEP 2: PERSONALIZATION
+# -------------------------
+elif st.session_state.step == 2:
+    st.title("Step 2: Personalization")
+
+    confidence = st.radio("Confidence Level", ["Low", "Medium", "High"])
+
+    fears = st.multiselect(
+        "Situations You Fear Most",
+        ["Public harassment", "Online threats", "Peer pressure", "Workplace/school pressure"]
+    )
+
+    if st.button("Next →"):
+        if len(fears) == 0:
+            st.warning("Select at least one fear")
+        else:
+            st.session_state.user_data.update({
+                "confidence": confidence,
+                "fears": fears
+            })
+            st.session_state.step = 3
+
+# -------------------------
+# STEP 3: EMERGENCY SETUP
+# -------------------------
+elif st.session_state.step == 3:
+    st.title("Step 3: Emergency Setup")
+
+    st.subheader("Add Contacts")
+
+    contact_name = st.text_input("Contact Name")
+    contact_phone = st.text_input("Phone Number")
+
+    if "contacts" not in st.session_state:
+        st.session_state.contacts = []
+
+    if st.button("Add Contact"):
+        if contact_name and contact_phone:
+            st.session_state.contacts.append({
+                "name": contact_name,
+                "phone": contact_phone
+            })
+
+    st.write("### Saved Contacts")
+    st.write(st.session_state.contacts)
+
+    share_location = st.checkbox("Share Live Location")
+    auto_alert = st.checkbox("Auto-send Alert Message")
+
+    if st.button("Finish →"):
+        if len(st.session_state.contacts) == 0:
+            st.warning("Add at least one contact")
+        else:
+            st.session_state.user_data.update({
+                "contacts": st.session_state.contacts,
+                "share_location": share_location,
+                "auto_alert": auto_alert
+            })
+
+            st.success("Setup Complete!")
+
+            st.write("### Final User Data")
+            st.json(st.session_state.user_data)
