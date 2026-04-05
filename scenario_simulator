@@ -1,0 +1,32 @@
+from openai import OpenAI
+client = OpenAI(api_key="API_KEY")
+
+def generate_ai_scenario():
+    prompt = """
+    Generate a real-life safety scenario for a young woman.
+    Return JSON:
+    {
+        "situation": "...",
+        "choices": ["...", "...", "..."],
+        "safe": 0,
+        "risky": 1,
+        "danger": 2
+    }
+    """
+
+    response = client.chat.completions.create(
+        model="gpt-4.1-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
+
+    return json.loads(response.choices[0].message.content)
+    st.session_state.scenario = generate_ai_scenario()
+
+    category = st.selectbox("Choose Scenario Type", [
+    "Public Safety",
+    "Online Safety",
+    "Peer Pressure"
+])
+
+if selected_index == st.session_state.scenario["danger"]:
+    st.error("🚨 Triggering SOS Recommendation!")
